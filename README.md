@@ -26,9 +26,7 @@ To get a local copy up and running follow these simple example steps.
 
 2. Clone this repo in your terminal or git bash using the command
 
-   ```
-  git@github.com:John-Kibirige/to-do-list.git
-   ```
+   ``` git@github.com:John-Kibirige/to-do-list.git ```
 
 3. run `npm install ` to install all the necessary dependencies including the linters and webpack
 
