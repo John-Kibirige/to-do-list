@@ -8,7 +8,7 @@ const createTodoItem = (id, description) => {
   li.innerHTML = `
        <img src="${checkIcon}" alt="finished task" class="finished-task">
        <input type="checkbox" id="${id}" class="checkbox" />
-       <label for="#${id}">${description}</label>
+       <label for="#${id}" id="task${id}">${description}</label>
        <img class="menu" src="${menuIcon}" alt="3-dot menu" />
     `;
   return li;

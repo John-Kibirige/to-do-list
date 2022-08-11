@@ -1,22 +1,25 @@
 import './styles/index.scss';
-import tasks from './modules/tasks.js';
 import headerInput from './modules/header-input.js';
 import createListItem from './modules/todo-item.js';
 import createInput from './modules/editable.js';
+import addTaskToLocal from './modules/addTaskToLocal.js';
 
 const todoListPlaceHolder = document.querySelector('.todo-list-placeholder');
 todoListPlaceHolder.prepend(headerInput());
 
 const populateList = (list) => {
   list.forEach((item) => {
-    const { description, id } = item;
-    document
-      .querySelector('.todo-list')
-      .appendChild(createListItem(id, description));
+    const { description, id, completed } = item;
+    const todoList = document.querySelector('.todo-list');
+    const listItem = createListItem(id, description);
+    if (completed) {
+      listItem.querySelector(`#task${id}`).classList.add('active');
+      listItem.children[1].style.display = 'none';
+      listItem.children[0].classList.add('active');
+    }
+    todoList.appendChild(listItem);
   });
 };
-
-const finishedTasksById = new Set();
 
 const handleOnCheck = () => {
   document.querySelectorAll('.checkbox').forEach((checkbox) => {
@@ -24,7 +27,18 @@ const handleOnCheck = () => {
       const checkBox = e.target;
       checkBox.parentElement.children[0].classList.add('active');
       checkBox.parentElement.children[2].classList.add('active');
-      finishedTasksById.add(Number(checkBox.id));
+
+      let localStorage = JSON.parse(window.localStorage.getItem('todo-tasks'));
+      localStorage = localStorage.map((task) => {
+        if (task.id === Number(checkBox.id)) {
+          return {
+            ...task,
+            completed: task.id === Number(checkBox.id),
+          };
+        }
+        return task;
+      });
+      window.localStorage.setItem('todo-tasks', JSON.stringify(localStorage));
     });
   });
 };
@@ -54,19 +68,48 @@ const handleItemMenuClick = () => {
 };
 
 const clearAllCompleted = () => {
-  const notCompleted = tasks.filter((task) => !finishedTasksById.has(task.id));
-  document.querySelector('.todo-list').innerHTML = '';
-  populateList(notCompleted);
+  let fromLocalStorage = window.localStorage.getItem('todo-tasks');
+  if (fromLocalStorage.length) {
+    fromLocalStorage = JSON.parse(fromLocalStorage);
+    // we update the ui after after clearing all tasks
+    fromLocalStorage = fromLocalStorage.filter(
+      (task) => task.completed === false
+    );
+    document.querySelector('.todo-list').innerHTML = '';
+    populateList(fromLocalStorage);
+    handleOnCheck();
+    handleItemMenuClick();
+
+    window.localStorage.setItem('todo-tasks', JSON.stringify(fromLocalStorage));
+  }
+};
+
+const renderFromLocal = () => {
+  let fromLocalStorage = window.localStorage.getItem('todo-tasks');
+  if (fromLocalStorage.length) {
+    fromLocalStorage = JSON.parse(fromLocalStorage);
+    // we update the ui after after clearing all tasks
+    document.querySelector('.todo-list').innerHTML = '';
+    populateList(fromLocalStorage);
+    handleOnCheck();
+    handleItemMenuClick();
+  }
+};
+
+const createTodo = () => {
+  document.querySelector('.header-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const todoValue = e.target.querySelector('#add-list').value;
+    addTaskToLocal(todoValue);
+    renderFromLocal();
+  });
 };
 
 window.addEventListener('load', () => {
-  populateList(tasks);
-  handleOnCheck();
-  handleItemMenuClick();
+  renderFromLocal();
+  createTodo();
 
   document.querySelector('.clear-tasks').addEventListener('click', () => {
     clearAllCompleted();
-    handleOnCheck();
-    handleItemMenuClick();
   });
 });
