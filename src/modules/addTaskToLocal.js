@@ -8,7 +8,6 @@ class Task {
 
 const addTaskToLocal = (description) => {
   let onLocalStorage = window.localStorage.getItem('todo-tasks');
-  console.log('This is the log at this point ', onLocalStorage);
   if (!onLocalStorage) {
     const task = new Task(description, false, 1);
     window.localStorage.setItem('todo-tasks', JSON.stringify([task]));
@@ -17,7 +16,7 @@ const addTaskToLocal = (description) => {
     const task = new Task(description, false, onLocalStorage.length + 1);
     window.localStorage.setItem(
       'todo-tasks',
-      JSON.stringify([...onLocalStorage, task])
+      JSON.stringify([...onLocalStorage, task]),
     );
   }
 };
