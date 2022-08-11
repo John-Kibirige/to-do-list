@@ -21,6 +21,7 @@ const populateList = (list) => {
   });
 };
 
+// handle on click checkbox
 const handleOnCheckboxClick = () => {
   document.querySelectorAll('.checkbox').forEach((checkbox) => {
     checkbox.addEventListener('click', (e) => {
@@ -43,88 +44,101 @@ const handleOnCheckboxClick = () => {
   });
 };
 
+// delete task
+const deleteTask = (parent, deleteIcon) => {
+  deleteIcon.addEventListener('click', () => {
+    parent.parentElement.removeChild(parent);
+    // we also update the local storage accordingly
+    const refId = parent.children[1].id;
+
+    let fromLocalStorage = window.localStorage.getItem('todo-tasks');
+    if (fromLocalStorage.length) {
+      fromLocalStorage = JSON.parse(fromLocalStorage);
+
+      fromLocalStorage = fromLocalStorage.filter((task) => {
+        const condition = task.id !== Number(refId);
+        return condition;
+      });
+
+      // reset the ids of the remaining tasks
+      fromLocalStorage = fromLocalStorage.map((task, index) => {
+        const result = {
+          ...task,
+          id: index + 1,
+        };
+        return result;
+      });
+
+      window.localStorage.setItem(
+        'todo-tasks',
+        JSON.stringify(fromLocalStorage)
+      );
+    }
+  });
+};
+
+// update task
+const updateTask = (e, onMenuClick) => {
+  const parent = e.target.parentElement;
+  const valueToEdit = parent.children[2].textContent;
+
+  parent.children[1].setAttribute('disabled', 'true');
+  const checkBoxId = Number(parent.children[1].id);
+
+  parent.removeChild(parent.children[2]);
+  parent.removeChild(parent.children[parent.children.length - 1]);
+
+  const [input, deleteIcon] = createInput(valueToEdit);
+  parent.appendChild(input);
+  parent.appendChild(deleteIcon);
+  input.focus();
+  parent.classList.add('active');
+
+  input.addEventListener('change', (e) => {
+    e.preventDefault();
+    let fromLocal = JSON.parse(window.localStorage.getItem('todo-tasks'));
+
+    fromLocal = fromLocal.map((task) => {
+      if (task.id === checkBoxId) {
+        const obj = {
+          ...task,
+          description: input.value,
+          completed: false,
+        };
+        return obj;
+      }
+      return task;
+    });
+    // we can as well rerender the updated item to the ui
+    document.querySelector('.todo-list').innerHTML = '';
+    populateList(fromLocal);
+    handleOnCheckboxClick();
+    onMenuClick();
+
+    // store updated list to local storage
+    window.localStorage.setItem('todo-tasks', JSON.stringify(fromLocal));
+
+    deleteTask(parent, deleteIcon);
+  });
+};
+
+// for updating and or removing a given item
 const handleItemMenuClick = () => {
   document.querySelectorAll('.menu').forEach((menu) => {
     menu.addEventListener('click', (e) => {
-      const parent = e.target.parentElement;
-      const valueToEdit = parent.children[2].textContent;
-
-      parent.children[1].setAttribute('disabled', 'true');
-      const checkBoxId = Number(parent.children[1].id);
-
-      parent.removeChild(parent.children[2]);
-      parent.removeChild(parent.children[parent.children.length - 1]);
-
-      const [input, deleteIcon] = createInput(valueToEdit);
-      parent.appendChild(input);
-      parent.appendChild(deleteIcon);
-      input.focus();
-      parent.classList.add('active');
-
-      input.addEventListener('change', (e) => {
-        e.preventDefault();
-        let fromLocal = JSON.parse(window.localStorage.getItem('todo-tasks'));
-
-        fromLocal = fromLocal.map((task) => {
-          if (task.id === checkBoxId) {
-            const obj = {
-              ...task,
-              description: input.value,
-              completed: false,
-            };
-            return obj;
-          }
-          return task;
-        });
-        // we can as well rerender the updated item to the ui
-        document.querySelector('.todo-list').innerHTML = '';
-        populateList(fromLocal);
-        handleOnCheckboxClick();
-        handleItemMenuClick();
-
-        window.localStorage.setItem('todo-tasks', JSON.stringify(fromLocal));
-      });
-
-      deleteIcon.addEventListener('click', () => {
-        parent.parentElement.removeChild(parent);
-        // we also update the local storage accordingly
-        const refId = parent.children[1].id;
-
-        let fromLocalStorage = window.localStorage.getItem('todo-tasks');
-        if (fromLocalStorage.length) {
-          fromLocalStorage = JSON.parse(fromLocalStorage);
-
-          fromLocalStorage = fromLocalStorage.filter((task) => {
-            const condition = task.id !== Number(refId);
-            return condition;
-          });
-
-          // reset the ids of the remaining tasks
-          fromLocalStorage = fromLocalStorage.map((task, index) => {
-            const result = {
-              ...task,
-              id: index + 1,
-            };
-            return result;
-          });
-
-          window.localStorage.setItem(
-            'todo-tasks',
-            JSON.stringify(fromLocalStorage),
-          );
-        }
-      });
+      updateTask(e, handleItemMenuClick);
     });
   });
 };
 
+// remove all completed tasks
 const clearAllCompleted = () => {
   let fromLocalStorage = window.localStorage.getItem('todo-tasks');
   if (fromLocalStorage.length) {
     fromLocalStorage = JSON.parse(fromLocalStorage);
 
     fromLocalStorage = fromLocalStorage.filter(
-      (task) => task.completed === false,
+      (task) => task.completed === false
     );
     // we update the ui after after clearing all tasks
     document.querySelector('.todo-list').innerHTML = '';
@@ -146,7 +160,7 @@ const clearAllCompleted = () => {
 
 const renderFromLocal = () => {
   let fromLocalStorage = window.localStorage.getItem('todo-tasks');
-  if (fromLocalStorage.length) {
+  if (fromLocalStorage !== null && fromLocalStorage.length) {
     fromLocalStorage = JSON.parse(fromLocalStorage);
     // we update the ui after after clearing all tasks
     document.querySelector('.todo-list').innerHTML = '';
