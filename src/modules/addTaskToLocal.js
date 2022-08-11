@@ -16,7 +16,7 @@ const addTaskToLocal = (description) => {
     const task = new Task(description, false, onLocalStorage.length + 1);
     window.localStorage.setItem(
       'todo-tasks',
-      JSON.stringify([...onLocalStorage, task])
+      JSON.stringify([...onLocalStorage, task]),
     );
   }
 };

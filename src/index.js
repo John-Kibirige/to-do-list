@@ -67,7 +67,7 @@ const handleItemMenuClick = () => {
 
         fromLocal = fromLocal.map((task) => {
           if (task.id === checkBoxId) {
-            let obj = {
+            const obj = {
               ...task,
               description: input.value,
               completed: false,
@@ -76,7 +76,7 @@ const handleItemMenuClick = () => {
           }
           return task;
         });
-        // we can as well rerender to the ui
+        // we can as well rerender the updated item to the ui
         document.querySelector('.todo-list').innerHTML = '';
         populateList(fromLocal);
         handleOnCheckboxClick();
@@ -110,7 +110,7 @@ const handleItemMenuClick = () => {
 
           window.localStorage.setItem(
             'todo-tasks',
-            JSON.stringify(fromLocalStorage)
+            JSON.stringify(fromLocalStorage),
           );
         }
       });
@@ -122,10 +122,11 @@ const clearAllCompleted = () => {
   let fromLocalStorage = window.localStorage.getItem('todo-tasks');
   if (fromLocalStorage.length) {
     fromLocalStorage = JSON.parse(fromLocalStorage);
-    // we update the ui after after clearing all tasks
+
     fromLocalStorage = fromLocalStorage.filter(
-      (task) => task.completed === false
+      (task) => task.completed === false,
     );
+    // we update the ui after after clearing all tasks
     document.querySelector('.todo-list').innerHTML = '';
     populateList(fromLocalStorage);
     handleOnCheckboxClick();
@@ -139,7 +140,6 @@ const clearAllCompleted = () => {
       };
       return result;
     });
-
     window.localStorage.setItem('todo-tasks', JSON.stringify(fromLocalStorage));
   }
 };
