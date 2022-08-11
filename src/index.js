@@ -50,6 +50,8 @@ const handleItemMenuClick = () => {
       const valueToEdit = parent.children[2].textContent;
 
       parent.children[1].setAttribute('disabled', 'true');
+      const checkBoxId = Number(parent.children[1].id);
+
       parent.removeChild(parent.children[2]);
       parent.removeChild(parent.children[parent.children.length - 1]);
 
@@ -58,6 +60,30 @@ const handleItemMenuClick = () => {
       parent.appendChild(deleteIcon);
       input.focus();
       parent.classList.add('active');
+
+      input.addEventListener('change', (e) => {
+        e.preventDefault();
+        let fromLocal = JSON.parse(window.localStorage.getItem('todo-tasks'));
+
+        fromLocal = fromLocal.map((task) => {
+          if (task.id === checkBoxId) {
+            let obj = {
+              ...task,
+              description: input.value,
+              completed: false,
+            };
+            return obj;
+          }
+          return task;
+        });
+        // we can as well rerender to the ui
+        document.querySelector('.todo-list').innerHTML = '';
+        populateList(fromLocal);
+        handleOnCheckboxClick();
+        handleItemMenuClick();
+
+        window.localStorage.setItem('todo-tasks', JSON.stringify(fromLocal));
+      });
 
       deleteIcon.addEventListener('click', () => {
         parent.parentElement.removeChild(parent);
