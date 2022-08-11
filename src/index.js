@@ -50,7 +50,6 @@ const handleItemMenuClick = () => {
       const valueToEdit = parent.children[2].textContent;
 
       parent.children[1].setAttribute('disabled', 'true');
-
       parent.removeChild(parent.children[2]);
       parent.removeChild(parent.children[parent.children.length - 1]);
 
@@ -62,6 +61,22 @@ const handleItemMenuClick = () => {
 
       deleteIcon.addEventListener('click', () => {
         parent.parentElement.removeChild(parent);
+        // we also update the local storage accordingly
+        const refId = parent.children[1].id;
+
+        let fromLocalStorage = window.localStorage.getItem('todo-tasks');
+        if (fromLocalStorage.length) {
+          fromLocalStorage = JSON.parse(fromLocalStorage);
+
+          fromLocalStorage = fromLocalStorage.filter((task) => {
+            const condition = task.id !== Number(refId);
+            return condition;
+          });
+          window.localStorage.setItem(
+            'todo-tasks',
+            JSON.stringify(fromLocalStorage)
+          );
+        }
       });
     });
   });
