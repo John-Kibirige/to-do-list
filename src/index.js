@@ -69,7 +69,7 @@ const deleteSingleItem = (deleteIcon, parent) => {
 
       window.localStorage.setItem(
         'todo-tasks',
-        JSON.stringify(fromLocalStorage),
+        JSON.stringify(fromLocalStorage)
       );
     }
   });
@@ -130,7 +130,7 @@ const clearAllCompleted = () => {
     fromLocalStorage = JSON.parse(fromLocalStorage);
 
     fromLocalStorage = fromLocalStorage.filter(
-      (task) => task.completed === false,
+      (task) => task.completed === false
     );
     // we update the ui after after clearing all tasks
     document.querySelector('.todo-list').innerHTML = '';
@@ -165,9 +165,10 @@ const renderFromLocal = () => {
 const createTodo = () => {
   document.querySelector('.header-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    const todoValue = e.target.querySelector('#add-list').value;
-    addTaskToLocal(todoValue);
+    const todoValue = e.target.querySelector('#add-list');
+    addTaskToLocal(todoValue.value);
     renderFromLocal();
+    todoValue.value = '';
   });
 };
 
