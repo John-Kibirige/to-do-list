@@ -94,6 +94,7 @@ img {
     display: none;
     width: 20px;
     margin-left: -3px;
+    cursor: pointer;
 
     &.active {
       display: inline-block;
@@ -103,17 +104,7 @@ img {
   input[type='checkbox'] {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-  }
-
-  input[type='checkbox']:checked {
-    display: none;
-  }
-
-  input[type='checkbox']:checked + label::before {
-    content: '';
-    margin-left: -14px;
-    margin-right: 14px;
-    color: hsl(240, 100%, 50%);
+    width: 20px;
   }
 
   label {
@@ -176,4 +167,8 @@ img {
       color: hsl(0, 0%, 0%);
     }
   }
+}
+
+.none {
+  display: none;
 }
