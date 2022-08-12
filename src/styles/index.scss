@@ -94,6 +94,7 @@ img {
     display: none;
     width: 20px;
     margin-left: -3px;
+    cursor: pointer;
 
     &.active {
       display: inline-block;

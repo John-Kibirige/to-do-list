@@ -69,7 +69,7 @@ const deleteSingleItem = (deleteIcon, parent) => {
 
       window.localStorage.setItem(
         'todo-tasks',
-        JSON.stringify(fromLocalStorage),
+        JSON.stringify(fromLocalStorage)
       );
     }
   });
@@ -94,6 +94,7 @@ const handleItemMenuClick = () => {
       input.focus();
       parent.classList.add('active');
 
+      // if the user edits the value, update to new value and update local storage
       input.addEventListener('change', (e) => {
         e.preventDefault();
         let fromLocal = JSON.parse(window.localStorage.getItem('todo-tasks'));
@@ -130,7 +131,7 @@ const clearAllCompleted = () => {
     fromLocalStorage = JSON.parse(fromLocalStorage);
 
     fromLocalStorage = fromLocalStorage.filter(
-      (task) => task.completed === false,
+      (task) => task.completed === false
     );
     // we update the ui after after clearing all tasks
     document.querySelector('.todo-list').innerHTML = '';
