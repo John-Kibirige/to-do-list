@@ -104,17 +104,11 @@ img {
   input[type='checkbox'] {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    width: 20px;
   }
 
   input[type='checkbox']:checked {
-    display: none;
-  }
-
-  input[type='checkbox']:checked + label::before {
-    content: '';
-    margin-left: -14px;
-    margin-right: 14px;
-    color: hsl(240, 100%, 50%);
+    accent-color: hsl(0, 0%, 100%);
   }
 
   label {
@@ -177,4 +171,8 @@ img {
       color: hsl(0, 0%, 0%);
     }
   }
+}
+
+.none {
+  display: none;
 }
