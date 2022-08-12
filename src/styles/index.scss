@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Open+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&display=swap');
 
+/* stylelint disable  Unknown property */
 :root {
   ---font-color: #5e5151;
   --main-color: hsl(0, 0%, 87%);
@@ -105,10 +106,6 @@ img {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     width: 20px;
-  }
-
-  input[type='checkbox']:checked {
-    accent-color: hsl(0, 0%, 100%);
   }
 
   label {

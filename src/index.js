@@ -64,7 +64,7 @@ const deleteSingleItem = (deleteIcon, parent) => {
 
       window.localStorage.setItem(
         'todo-tasks',
-        JSON.stringify(fromLocalStorage)
+        JSON.stringify(fromLocalStorage),
       );
     }
   });
@@ -132,7 +132,7 @@ const clearAllCompleted = () => {
     fromLocalStorage = JSON.parse(fromLocalStorage);
 
     fromLocalStorage = fromLocalStorage.filter(
-      (task) => task.completed === false
+      (task) => task.completed === false,
     );
     // we update the ui after after clearing all tasks
     document.querySelector('.todo-list').innerHTML = '';
