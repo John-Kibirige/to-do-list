@@ -42,7 +42,7 @@ const deleteSingleItem = (deleteIcon, parent) => {
   deleteIcon.addEventListener('click', () => {
     parent.parentElement.removeChild(parent);
     // we also update the local storage accordingly
-    const refId = parent.children[1].id;
+    const refId = parent.children[0].id;
 
     let fromLocalStorage = window.localStorage.getItem('todo-tasks');
     if (fromLocalStorage.length) {
@@ -70,14 +70,38 @@ const deleteSingleItem = (deleteIcon, parent) => {
   });
 };
 
-// handles both update and deletion
+// update task after being edited
+const updateEdited = (checkBoxId, input, menuClickEvent) => {
+  let fromLocal = JSON.parse(window.localStorage.getItem('todo-tasks'));
+
+  fromLocal = fromLocal.map((task) => {
+    if (task.id === checkBoxId) {
+      const obj = {
+        ...task,
+        description: input.value,
+        completed: false,
+      };
+      return obj;
+    }
+    return task;
+  });
+  // we can as well rerender the updated item to the ui
+  document.querySelector('.todo-list').innerHTML = '';
+  populateList(fromLocal);
+  handleOnCheckboxClick();
+  menuClickEvent();
+
+  window.localStorage.setItem('todo-tasks', JSON.stringify(fromLocal));
+};
+
+// handles both update and deletion of a single task
 const handleItemMenuClick = () => {
   document.querySelectorAll('.menu').forEach((menu) => {
     menu.addEventListener('click', (e) => {
       const parent = e.target.parentElement;
       const valueToEdit = parent.children[1].textContent;
 
-      parent.children[1].setAttribute('disabled', 'true');
+      parent.children[0].setAttribute('disabled', 'true');
       const checkBoxId = Number(parent.children[0].id);
 
       parent.removeChild(parent.children[1]);
@@ -90,28 +114,10 @@ const handleItemMenuClick = () => {
       parent.classList.add('active');
 
       // if the user edits the value, update to new value and update local storage
+
       input.addEventListener('change', (e) => {
         e.preventDefault();
-        let fromLocal = JSON.parse(window.localStorage.getItem('todo-tasks'));
-
-        fromLocal = fromLocal.map((task) => {
-          if (task.id === checkBoxId) {
-            const obj = {
-              ...task,
-              description: input.value,
-              completed: false,
-            };
-            return obj;
-          }
-          return task;
-        });
-        // we can as well rerender the updated item to the ui
-        document.querySelector('.todo-list').innerHTML = '';
-        populateList(fromLocal);
-        handleOnCheckboxClick();
-        handleItemMenuClick();
-
-        window.localStorage.setItem('todo-tasks', JSON.stringify(fromLocal));
+        updateEdited(checkBoxId, input, handleItemMenuClick);
       });
 
       // delete item

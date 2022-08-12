@@ -11,7 +11,6 @@ const statusUpdate = (currentId) => {
   });
 
   window.localStorage.setItem('todo-tasks', JSON.stringify(localStorage));
-  console.log('This is the local storage at this point ', localStorage);
 };
 
 export default statusUpdate;
