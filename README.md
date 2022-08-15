@@ -10,7 +10,7 @@ This is a simple todo list app to help you plan and manage your time effectively
 
 ## Live Demo
 
-N/A
+[https://John-Kibirige.github.io/to-do-list](https://John-Kibirige.github.io/to-do-list)
 
 ## Getting Started
 
