@@ -110,6 +110,8 @@ const handleItemMenuClick = () => {
       const [input, deleteIcon] = createInput(valueToEdit);
       parent.appendChild(input);
       parent.appendChild(deleteIcon);
+      const end = valueToEdit.length;
+      input.setSelectionRange(end, end);
       input.focus();
       parent.classList.add('active');
 

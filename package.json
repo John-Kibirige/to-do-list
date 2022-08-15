@@ -1,9 +1,12 @@
 {
+  "homepage": "https://John-Kibirige.github.io/to-do-list",
   "name": "y",
   "version": "1.0.0",
   "description": "Configured webpack environment",
   "main": "index.js",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "build": "webpack",
     "start": "webpack serve --open",
     "watch": "webpack --watch"
@@ -24,6 +27,7 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.26.0",
+    "gh-pages": "^4.0.0",
     "hint": "^7.1.1",
     "html-webpack-plugin": "^5.5.0",
     "sass": "^1.54.3",
