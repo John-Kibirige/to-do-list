@@ -42,7 +42,7 @@ const removeCompletedTasksFromLocal = (local) => {
   let fromLocalStorage = JSON.parse(local.getItem('todo-tasks'));
   if (fromLocalStorage.length) {
     fromLocalStorage = fromLocalStorage.filter(
-      (task) => task.completed === false
+      (task) => task.completed === false,
     );
     return fromLocalStorage;
   }
