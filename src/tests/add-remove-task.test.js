@@ -4,6 +4,8 @@ import {
   removeTaskHelper,
   removeCompletedTasksFromLocal,
 } from '../modules/addTaskToLocal.js';
+import editTask from '../modules/edit-task.js';
+import { statusUpdateHelper } from '../modules/status-update.js';
 
 class LocalStorageMock {
   constructor() {
@@ -96,5 +98,35 @@ describe('Removing data from local storage ', () => {
     localStorage.setItem('todo-tasks', JSON.stringify(onLocal));
     const balance = removeCompletedTasksFromLocal(localStorage);
     expect(balance.length).toEqual(2);
+  });
+});
+
+// testing for the editing a task, updating it,  mock some dom manipulation functions
+
+describe('editing task description', () => {
+  test('check if task on local can be edited', () => {
+    const onLocal = JSON.parse(localStorage.getItem('todo-tasks'));
+    const editedLocal = editTask('New task', 2, onLocal);
+    expect(editedLocal[0].description).toBe('New task');
+    localStorage.setItem('todo-tasks', JSON.stringify(editedLocal));
+  });
+
+  test('Check if edited changes persist on local storage ', () => {
+    const onLocal = JSON.parse(localStorage.getItem('todo-tasks'));
+    expect(onLocal[0].description).toBe('New task');
+  });
+});
+
+describe('update status', () => {
+  test('check if function updates status ', () => {
+    statusUpdateHelper(2, localStorage);
+    const onLocal = JSON.parse(localStorage.getItem('todo-tasks'));
+    expect(onLocal[0].completed).toBe(true);
+  });
+
+  test('check if function is able to toggle the previous marked state', () => {
+    statusUpdateHelper(2, localStorage);
+    const onLocal = JSON.parse(localStorage.getItem('todo-tasks'));
+    expect(onLocal[0].completed).toBe(false);
   });
 });

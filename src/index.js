@@ -7,10 +7,11 @@ import {
   removeItemFromLocal,
   removeCompletedTasksFromLocal,
 } from './modules/addTaskToLocal.js';
-import statusUpdate from './modules/status-update.js';
+import { statusUpdate } from './modules/status-update.js';
 import { storeToLocal, retrieveFromLocal } from './modules/save-retrieve.js';
 import resetIndices from './modules/reset-indices.js';
 import validateForm from './modules/formValidation.js';
+import editTask from './modules/edit-task.js';
 
 const todoList = document.querySelector('.todo-list');
 
@@ -60,17 +61,7 @@ const deleteSingleItem = (deleteIcon, parent) => {
 // update task after being edited
 const updateEdited = (checkBoxId, input, menuClickEvent) => {
   let fromLocal = JSON.parse(retrieveFromLocal());
-  fromLocal = fromLocal.map((task) => {
-    if (task.id === checkBoxId) {
-      const obj = {
-        ...task,
-        description: input,
-        completed: false,
-      };
-      return obj;
-    }
-    return task;
-  });
+  fromLocal = editTask(input, checkBoxId, fromLocal);
   // we can as well rerender the updated item to the ui
   document.querySelector('.todo-list').innerHTML = '';
   populateList(fromLocal);
