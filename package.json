@@ -9,7 +9,8 @@
     "deploy": "gh-pages -d dist",
     "build": "webpack",
     "start": "webpack serve --open",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "test": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,8 @@
     "url": "https://github.com/John-Kibirige/webpack-setup/issues"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.18.6",
+    "@types/jest": "^28.1.7",
     "babel-eslint": "^10.1.0",
     "css-loader": "^6.7.1",
     "eslint": "^7.32.0",
@@ -29,6 +32,7 @@
     "gh-pages": "^4.0.0",
     "hint": "^7.1.1",
     "html-webpack-plugin": "^5.5.0",
+    "jest": "^28.1.3",
     "sass": "^1.54.3",
     "sass-loader": "^13.0.2",
     "style-loader": "^3.3.1",
