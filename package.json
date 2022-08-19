@@ -1,5 +1,5 @@
 {
-  "homepage": "https://John-Kibirige.github.io/to-do-list",
+  "homepage": "https://github.com/John-Kibirige/webpack-setup#readme",
   "name": "y",
   "version": "1.0.0",
   "description": "Configured webpack environment",
@@ -20,7 +20,6 @@
   "bugs": {
     "url": "https://github.com/John-Kibirige/webpack-setup/issues"
   },
-  "homepage": "https://github.com/John-Kibirige/webpack-setup#readme",
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "css-loader": "^6.7.1",

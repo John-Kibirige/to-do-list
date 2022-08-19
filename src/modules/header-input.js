@@ -12,8 +12,8 @@ const createHeaderInput = () => {
         </div>
 
         <form action="#" class="header-form" id="form">
-          <input type="text" id="add-list" placeholder="Add your list ..." required/>
-          <img src="${enterImage}" alt="enter-item" />
+          <input type="text" id="add-list" placeholder="Add your list ..." />
+          <img src="${enterImage}" alt="enter-item" class="enter-icon" />
         </form>
     `;
 

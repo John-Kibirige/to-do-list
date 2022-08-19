@@ -2,8 +2,17 @@ import './styles/index.scss';
 import headerInput from './modules/header-input.js';
 import createListItem from './modules/todo-item.js';
 import createInput from './modules/editable.js';
-import addTaskToLocal from './modules/addTaskToLocal.js';
+import {
+  addTaskToLocal,
+  removeItemFromLocal,
+  removeCompletedTasksFromLocal,
+} from './modules/addTaskToLocal.js';
 import statusUpdate from './modules/status-update.js';
+import { storeToLocal, retrieveFromLocal } from './modules/save-retrieve.js';
+import resetIndices from './modules/reset-indices.js';
+import validateForm from './modules/formValidation.js';
+
+const todoList = document.querySelector('.todo-list');
 
 const todoListPlaceHolder = document.querySelector('.todo-list-placeholder');
 todoListPlaceHolder.prepend(headerInput());
@@ -11,7 +20,6 @@ todoListPlaceHolder.prepend(headerInput());
 const populateList = (list) => {
   list.forEach((item) => {
     const { description, id, completed } = item;
-    const todoList = document.querySelector('.todo-list');
     const listItem = createListItem(id, description);
     if (completed) {
       listItem.querySelector(`#task${id}`).classList.add('active');
@@ -29,11 +37,10 @@ const handleOnCheckboxClick = () => {
 
       if (checkbox.checked) {
         label.classList.add('active');
-        statusUpdate(checkBoxId);
       } else {
         label.classList.remove('active');
-        statusUpdate(checkBoxId);
       }
+      statusUpdate(checkBoxId);
     });
   });
 };
@@ -44,41 +51,20 @@ const deleteSingleItem = (deleteIcon, parent) => {
     // we also update the local storage accordingly
     const refId = parent.children[0].id;
 
-    let fromLocalStorage = window.localStorage.getItem('todo-tasks');
-    if (fromLocalStorage.length) {
-      fromLocalStorage = JSON.parse(fromLocalStorage);
-
-      fromLocalStorage = fromLocalStorage.filter((task) => {
-        const condition = task.id !== Number(refId);
-        return condition;
-      });
-
-      // reset the ids of the remaining tasks
-      fromLocalStorage = fromLocalStorage.map((task, index) => {
-        const result = {
-          ...task,
-          id: index + 1,
-        };
-        return result;
-      });
-
-      window.localStorage.setItem(
-        'todo-tasks',
-        JSON.stringify(fromLocalStorage),
-      );
-    }
+    const fromLocalStorage = retrieveFromLocal();
+    removeItemFromLocal(+refId);
+    resetIndices(fromLocalStorage);
   });
 };
 
 // update task after being edited
 const updateEdited = (checkBoxId, input, menuClickEvent) => {
-  let fromLocal = JSON.parse(window.localStorage.getItem('todo-tasks'));
-
+  let fromLocal = JSON.parse(retrieveFromLocal());
   fromLocal = fromLocal.map((task) => {
     if (task.id === checkBoxId) {
       const obj = {
         ...task,
-        description: input.value,
+        description: input,
         completed: false,
       };
       return obj;
@@ -91,7 +77,7 @@ const updateEdited = (checkBoxId, input, menuClickEvent) => {
   handleOnCheckboxClick();
   menuClickEvent();
 
-  window.localStorage.setItem('todo-tasks', JSON.stringify(fromLocal));
+  storeToLocal(fromLocal);
 };
 
 // handles both update and deletion of a single task
@@ -116,10 +102,18 @@ const handleItemMenuClick = () => {
       parent.classList.add('active');
 
       // if the user edits the value, update to new value and update local storage
-
+      let newValue = input.value;
       input.addEventListener('change', (e) => {
         e.preventDefault();
-        updateEdited(checkBoxId, input, handleItemMenuClick);
+        newValue = input.value;
+      });
+
+      input.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+          if (newValue) {
+            updateEdited(checkBoxId, newValue, handleItemMenuClick);
+          }
+        }
       });
 
       // delete item
@@ -129,13 +123,8 @@ const handleItemMenuClick = () => {
 };
 
 const clearAllCompleted = () => {
-  let fromLocalStorage = window.localStorage.getItem('todo-tasks');
-  if (fromLocalStorage.length) {
-    fromLocalStorage = JSON.parse(fromLocalStorage);
-
-    fromLocalStorage = fromLocalStorage.filter(
-      (task) => task.completed === false,
-    );
+  const fromLocalStorage = removeCompletedTasksFromLocal(window.localStorage);
+  if (fromLocalStorage.length > 0) {
     // we update the ui after after clearing all tasks
     document.querySelector('.todo-list').innerHTML = '';
     populateList(fromLocalStorage);
@@ -143,19 +132,12 @@ const clearAllCompleted = () => {
     handleItemMenuClick();
 
     // reset the ids of the remaining tasks
-    fromLocalStorage = fromLocalStorage.map((task, index) => {
-      const result = {
-        ...task,
-        id: index + 1,
-      };
-      return result;
-    });
-    window.localStorage.setItem('todo-tasks', JSON.stringify(fromLocalStorage));
+    resetIndices(fromLocalStorage);
   }
 };
 
 const renderFromLocal = () => {
-  let fromLocalStorage = window.localStorage.getItem('todo-tasks');
+  let fromLocalStorage = retrieveFromLocal();
   if (fromLocalStorage !== null && fromLocalStorage.length) {
     fromLocalStorage = JSON.parse(fromLocalStorage);
     // we update the ui after after clearing all tasks
@@ -167,12 +149,23 @@ const renderFromLocal = () => {
 };
 
 const createTodo = () => {
+  const create = () => {
+    const todoInput = document.querySelector('#add-list');
+    if (todoInput.value.trim().length === 0) {
+      validateForm(todoInput);
+      return;
+    }
+    addTaskToLocal(todoInput.value);
+    renderFromLocal();
+    todoInput.value = '';
+  };
+
   document.querySelector('.header-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    const todoValue = e.target.querySelector('#add-list');
-    addTaskToLocal(todoValue.value);
-    renderFromLocal();
-    todoValue.value = '';
+    create();
+  });
+  document.querySelector('.enter-icon').addEventListener('click', () => {
+    create();
   });
 };
 
