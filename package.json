@@ -22,6 +22,7 @@
     "url": "https://github.com/John-Kibirige/webpack-setup/issues"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.18.6",
     "@types/jest": "^28.1.7",
     "babel-eslint": "^10.1.0",
     "css-loader": "^6.7.1",
