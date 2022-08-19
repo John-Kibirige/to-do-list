@@ -5,6 +5,7 @@ import {
   removeCompletedTasksFromLocal,
 } from '../modules/addTaskToLocal.js';
 import editTask from '../modules/edit-task.js';
+import { statusUpdateHelper } from '../modules/status-update.js';
 
 class LocalStorageMock {
   constructor() {
@@ -113,5 +114,19 @@ describe('editing task description', () => {
   test('Check if edited changes persist on local storage ', () => {
     const onLocal = JSON.parse(localStorage.getItem('todo-tasks'));
     expect(onLocal[0].description).toBe('New task');
+  });
+});
+
+describe('update status', () => {
+  test('check if function updates status ', () => {
+    statusUpdateHelper(2, localStorage);
+    const onLocal = JSON.parse(localStorage.getItem('todo-tasks'));
+    expect(onLocal[0].completed).toBe(true);
+  });
+
+  test('check if function is able to toggle the previous marked state', () => {
+    statusUpdateHelper(2, localStorage);
+    const onLocal = JSON.parse(localStorage.getItem('todo-tasks'));
+    expect(onLocal[0].completed).toBe(false);
   });
 });

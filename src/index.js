@@ -7,7 +7,7 @@ import {
   removeItemFromLocal,
   removeCompletedTasksFromLocal,
 } from './modules/addTaskToLocal.js';
-import statusUpdate from './modules/status-update.js';
+import { statusUpdate } from './modules/status-update.js';
 import { storeToLocal, retrieveFromLocal } from './modules/save-retrieve.js';
 import resetIndices from './modules/reset-indices.js';
 import validateForm from './modules/formValidation.js';
